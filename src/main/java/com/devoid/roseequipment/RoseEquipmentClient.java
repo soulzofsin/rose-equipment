@@ -15,6 +15,7 @@ public final class RoseEquipmentClient implements ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
             dispatcher.register(ClientCommands.literal("rose")
                     .executes(context -> openMenu()));
+
             dispatcher.register(ClientCommands.literal("rosemenu")
                     .executes(context -> openMenu()));
         });
@@ -22,7 +23,13 @@ public final class RoseEquipmentClient implements ClientModInitializer {
 
     private static int openMenu() {
         Minecraft minecraft = Minecraft.getInstance();
-        minecraft.gui.setScreen(new RoseMenuScreen(minecraft.gui.screen()));
+
+        // Client commands can run off the render thread. Queue the screen open
+        // onto Minecraft's client thread so the GUI actually appears.
+        minecraft.execute(() ->
+                minecraft.gui.setScreen(new RoseMenuScreen(minecraft.gui.screen()))
+        );
+
         return 1;
     }
 }
