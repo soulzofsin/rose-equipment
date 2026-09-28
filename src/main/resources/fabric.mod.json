@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "roseequipment",
+  "version": "${version}",
+  "name": "Rose Equipment",
+  "description": "Client-side player equipment display for Minecraft 26.2.",
+  "authors": ["soulzofsin"],
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.devoid.roseequipment.RoseEquipmentClient"
+    ]
+  },
+  "mixins": [
+    "roseequipment.client.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
