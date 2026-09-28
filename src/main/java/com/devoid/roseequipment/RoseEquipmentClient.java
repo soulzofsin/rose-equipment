@@ -68,8 +68,9 @@ public final class RoseEquipmentClient implements ClientModInitializer {
 
             try {
                 if (client.player != null && commandWasCaught) {
-                    client.gui.hud.chat.addClientSystemMessage(
-                            Component.literal("[Rose] Opening equipment menu...")
+                    client.player.displayClientMessage(
+                            Component.literal("[Rose] Opening equipment menu..."),
+                            false
                     );
                 }
 
@@ -79,11 +80,12 @@ public final class RoseEquipmentClient implements ClientModInitializer {
                 commandWasCaught = false;
 
                 if (client.player != null) {
-                    client.gui.hud.chat.addClientSystemMessage(
+                    client.player.displayClientMessage(
                             Component.literal("[Rose] Menu error: "
                                     + throwable.getClass().getSimpleName()
                                     + ": "
-                                    + String.valueOf(throwable.getMessage()))
+                                    + String.valueOf(throwable.getMessage())),
+                            false
                     );
                 }
 
