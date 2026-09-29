@@ -6,8 +6,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -21,19 +22,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mixin(AvatarRenderer.class)
+@Mixin(LivingEntityRenderer.class)
 public abstract class AvatarRendererMixin {
     private static final int LINE_SPACING = 10;
 
-    @Inject(method = "submitNameDisplay*", at = @At("HEAD"))
+    /*
+     * Minecraft 26.2's actual per-entity submit method lives on
+     * LivingEntityRenderer, not AvatarRenderer. Injecting here guarantees this
+     * runs for every rendered player even if a server/client changes nametags.
+     */
+    @Inject(
+            method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
+            at = @At("TAIL")
+    )
     private void roseEquipment$submitEquipment(
-            AvatarRenderState state,
+            LivingEntityRenderState livingState,
             PoseStack poseStack,
             SubmitNodeCollector collector,
             CameraRenderState camera,
             CallbackInfo ci
     ) {
         if (!RoseConfig.enabled) return;
+        if (!(livingState instanceof AvatarRenderState state)) return;
 
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel level = minecraft.level;
@@ -58,13 +68,11 @@ public abstract class AvatarRendererMixin {
             addItem(armor, "Feet", player.getItemBySlot(EquipmentSlot.FEET));
         }
 
-        /*
-         * Magnolia/OneClient can change or suppress the normal player nametag.
-         * Running at HEAD means our equipment display is submitted before
-         * vanilla/server nametag logic can return early.
-         */
+        if (hands.isEmpty() && armor.isEmpty()) return;
+
         poseStack.pushPose();
 
+        // Negative offsets stack lines upward above the player's normal nametag.
         int offset = -LINE_SPACING;
 
         if (!hands.isEmpty()) {
