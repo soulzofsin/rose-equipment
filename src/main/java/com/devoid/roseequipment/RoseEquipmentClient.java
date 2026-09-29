@@ -2,6 +2,7 @@ package com.devoid.roseequipment;
 
 import com.devoid.roseequipment.config.RoseConfig;
 import com.devoid.roseequipment.gui.RoseMenuScreen;
+import com.devoid.roseequipment.render.EquipmentOverlayRenderer;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -22,7 +23,8 @@ public final class RoseEquipmentClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         RoseConfig.load();
-        LOGGER.info("Rose Equipment 1.0.1 client initializer started");
+        EquipmentOverlayRenderer.register();
+        LOGGER.info("Rose Equipment 1.0.5 client initializer started");
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
             dispatcher.register(ClientCommands.literal("rose")
@@ -46,7 +48,7 @@ public final class RoseEquipmentClient implements ClientModInitializer {
             dispatcher.register(ClientCommands.literal("roseping")
                     .executes(context -> {
                         context.getSource().sendFeedback(
-                                Component.literal("[Rose] Rose Equipment 1.0.1 is loaded.")
+                                Component.literal("[Rose] Rose Equipment 1.0.5 is loaded.")
                         );
                         return 1;
                     }));
@@ -56,7 +58,7 @@ public final class RoseEquipmentClient implements ClientModInitializer {
             if (!announcedLoaded && client.player != null && client.level != null) {
                 announcedLoaded = true;
                 client.player.sendSystemMessage(
-                        Component.literal("[Rose] Rose Equipment 1.0.1 loaded. Use /rose, /roseping, or F8.")
+                        Component.literal("[Rose] Rose Equipment 1.0.5 loaded. Use /rose, /roseping, or F8.")
                 );
             }
 
