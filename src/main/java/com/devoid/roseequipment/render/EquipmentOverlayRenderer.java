@@ -32,7 +32,7 @@ public final class EquipmentOverlayRenderer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;
 
-        Vec3 cameraPos = context.gameRenderer().getMainCamera().position();
+        Vec3 cameraPos = context.levelState().cameraRenderState.pos;
         PoseStack poseStack = context.poseStack();
 
         double maxDistanceSq = (double) RoseConfig.maxDistance * RoseConfig.maxDistance;
