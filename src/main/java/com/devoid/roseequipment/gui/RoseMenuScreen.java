@@ -85,14 +85,6 @@ public final class RoseMenuScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-        /*
-         * Let Minecraft submit the screen background and all widgets first.
-         * Anything we draw after this appears above them, so the rose decoration
-         * deliberately stays around the outside and never paints over the
-         * center where the buttons are.
-         */
-        super.extractRenderState(graphics, mouseX, mouseY, delta);
-
         int cx = width / 2;
         int panelX = cx - 136;
         int panelY = height / 2 - 110;
@@ -111,6 +103,12 @@ public final class RoseMenuScreen extends Screen {
         graphics.fill(panelX, panelY + panelH - 2, panelX + panelW, panelY + panelH, PANEL_EDGE);
         graphics.fill(panelX, panelY, panelX + 2, panelY + panelH, PANEL_EDGE);
         graphics.fill(panelX + panelW - 2, panelY, panelX + panelW, panelY + panelH, PANEL_EDGE);
+
+        /*
+         * Render the normal screen/widgets AFTER the panel background so the
+         * buttons always sit on top instead of being hidden by our decoration.
+         */
+        super.extractRenderState(graphics, mouseX, mouseY, delta);
 
         graphics.text(font, "✿ Rose Equipment ✿", cx - 52, panelY + 12, ROSE, true);
         graphics.text(font, "Client-side equipment display", cx - 74, panelY + 28, ROSE_LIGHT, false);
