@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class AvatarRendererMixin {
     private static final int LINE_SPACING = 10;
 
-    @Inject(method = "submitNameDisplay*", at = @At("TAIL"))
+    @Inject(method = "submitNameDisplay*", at = @At("HEAD"))
     private void roseEquipment$submitEquipment(
             AvatarRenderState state,
             PoseStack poseStack,
@@ -58,6 +58,13 @@ public abstract class AvatarRendererMixin {
             addItem(armor, "Feet", player.getItemBySlot(EquipmentSlot.FEET));
         }
 
+        /*
+         * Magnolia/OneClient can change or suppress the normal player nametag.
+         * Running at HEAD means our equipment display is submitted before
+         * vanilla/server nametag logic can return early.
+         */
+        poseStack.pushPose();
+
         int offset = -LINE_SPACING;
 
         if (!hands.isEmpty()) {
@@ -84,6 +91,8 @@ public abstract class AvatarRendererMixin {
                     camera
             );
         }
+
+        poseStack.popPose();
     }
 
     private static void addItem(List<String> output, String label, ItemStack stack) {
