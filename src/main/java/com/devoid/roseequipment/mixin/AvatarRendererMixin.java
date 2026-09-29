@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -78,10 +79,10 @@ public abstract class AvatarRendererMixin {
         if (!hands.isEmpty()) {
             collector.submitNameTag(
                     poseStack,
-                    state.nameTagAttachment,
+                    new Vec3(0.0, state.boundingBoxHeight + 0.55, 0.0),
                     offset,
                     roseText(String.join("  |  ", hands)),
-                    !state.isDiscrete,
+                    true,
                     state.lightCoords,
                     camera
             );
@@ -91,10 +92,10 @@ public abstract class AvatarRendererMixin {
         if (!armor.isEmpty()) {
             collector.submitNameTag(
                     poseStack,
-                    state.nameTagAttachment,
+                    new Vec3(0.0, state.boundingBoxHeight + 0.55, 0.0),
                     offset,
                     roseText(String.join("  |  ", armor)),
-                    !state.isDiscrete,
+                    true,
                     state.lightCoords,
                     camera
             );
